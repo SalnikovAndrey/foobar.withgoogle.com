@@ -46,7 +46,6 @@ Output:
     21,15,29
 
 """
-# from pprint import pprint
 
 def solution(h, q):
     root_node = node_count = (2 ** h - 1)
@@ -85,41 +84,47 @@ def tree_builder(h):
 
     # print(tree)
 
-    count = 0
-    level = 1
-    level_length = leaf_count
+    current_position = 0
+    current_level = 1
+    bottom_level_lenght = leaf_count
+    bottom_level = 1
 
     for num in traverse_postorder:
-        count += 1
-        # print(f"Count: {count}")
+
         # print(f"Number: {num}")
-        # print(f"Level: {level}")
-        # print(f"Level_length: {level_length}")
-        # print("tree[level]", len(tree[level]))
+        # print(f"Level: {current_level}")
+        # print(f"Bottom level: {bottom_level}")
+        # print(f"Bottom Level_length: {bottom_level_lenght}")
+        # print("Length of the current level", len(tree[current_level]))
 
-        if len(tree[level]) == level_length:
-            level += 1
-            level_length = int(level_length / 2)
-            count = 1
 
+        # Place the root node at the top level
         if num == root_node:
             tree[h] += [num]
             break
-        if count == 1:
-            tree[level] += [num]
-            # traverse_postorder.remove(num)
-        elif count == 2:
-            tree[level] += [num]
-            # traverse_postorder.remove(num)
-        elif count == 3:
-            tree[level + 1] += [num]
-            # traverse_postorder.remove(num)
-            count = 0
-        # print(tree)
-        # traverse_postorder.remove(num)
 
-    # tree is a perfect tree with a given height
-    # pprint(tree)
+        # If current position is odd
+        if len(tree[current_level]) == 0 or len(tree[current_level]) % 2 == 0:
+            # print('Odd', num)
+            if current_level == bottom_level:
+                tree[current_level] += [num]
+            elif current_level != bottom_level:
+                tree[current_level] += [num]
+                current_level = bottom_level
+            # if len(current_level)
+        # If current position is even
+        elif len(tree[current_level]) % 2 != 0:
+            # print('Even', num)
+            if current_level == bottom_level:
+                tree[current_level] += [num]
+                if len(tree[bottom_level]) == bottom_level_lenght:
+                    bottom_level += 1
+                    bottom_level_lenght /= int(bottom_level_lenght / 2)
+                current_level += 1
+            elif current_level != bottom_level:
+                tree[current_level] += [num]
+                current_level += 1
+
 
     root_map = {} # {child: parent}
 
@@ -138,14 +143,10 @@ def tree_builder(h):
             key = tree[lev - 1][index]
             root_map[key] = item
 
-
-    # pprint(root_map)
     return root_map
 
-# print(solution(5, [7, 77, 5, 9]))
 
-print(tree_builder(1))
+# print(solution(3, [7, 3, 5, 1]))
+# print(solution(5, [19, 14, 28]))
 
-print(solution(2, [7, 3, 5, 1]))
 
-print(solution(5, [19, 14, 28]))
